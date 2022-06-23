@@ -118,7 +118,7 @@ class GaodeMap:
         """
         return self.lng_lat[city_name]
 
-    def fetch_route(self, origin: list, destination: list, method: str = 'directionlite') -> dict:
+    def fetch_route(self, origin: list, destination: list, method: str ) -> dict:
         """
         使用高德地图API获取所需要的信息（里程数，驾车时间，过路费）
 
@@ -149,16 +149,21 @@ class GaodeMap:
                 'duration': routes['duration']
             }
         else:
-            print(params)
-            raise Exception('调用出错！')
+            # print(params)
+            # raise Exception('调用出错！')
+            return {
+                'distance': 'not found',
+                'duration': 'not found'
+            }
 
 if __name__ == "__main__":
     import time
     map = GaodeMap()
     map.login('673f63b7ea3b20ff3bf73cbf2c9db60f')
-    # 刷新列表城市的经纬度
-    map.get_cities_lng_lat('cities.csv')
-    map.init_result_csv('cities.csv')
+    # # 刷新列表城市的经纬度
+    # map.get_cities_lng_lat('cities.csv')
+    # # 将城市列表正交处理
+    # map.init_result_csv('cities.csv')
     map.read_lng_lat('cities_lng_lat_gaode.csv')
     
     result_df = read_df('distance_gaode.csv')
@@ -166,7 +171,7 @@ if __name__ == "__main__":
     # result_df['gaode_map_distance'] = 0 
     print("=======\n", result_df)
 
-    print('使用高德地图API读取数据...')
+    print(f'使用高德地图API读取{len(result_df)}数据...')
     for index in range(len(result_df)):
         if result_df.at[index, 'gaode_map_distance'] == 0.0:
             origin_city = result_df.at[index, 'origin']
